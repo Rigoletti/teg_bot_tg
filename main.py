@@ -1,4 +1,3 @@
-import os
 import logging
 from telegram import Update, BotCommand
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
@@ -9,16 +8,11 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-# Получаем токен из переменных окружения
-BOT_TOKEN = os.environ.get('BOT_TOKEN')
+# Токен бота (прямо в коде)
+BOT_TOKEN = "8355837238:AAHGuJ016fgGwrKfqKIvV9w7VXOCgZdh_aY"
 
-if not BOT_TOKEN:
-    print("❌ ОШИБКА: BOT_TOKEN не установлен!")
-    print("💡 Установите BOT_TOKEN в настройках Railway")
-    exit(1)
-
-print("✅ BOT_TOKEN найден")
 print("🚀 Запуск бота на Railway...")
+print("✅ BOT_TOKEN установлен в коде")
 
 groups_data = {
     "команда": [
@@ -113,7 +107,7 @@ class GroupMentionBot:
         await application.bot.set_my_commands(commands)
 
     def run(self):
-        print("🤖 Бот запущен и готов к работе!")
+        print("🤖 Бот запущен и готов к работе на Railway!")
         self.application.run_polling()
 
 # Запуск бота
