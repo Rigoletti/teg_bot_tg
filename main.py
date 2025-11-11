@@ -48,8 +48,10 @@ class GroupMentionBot:
         self.application.add_handler(CommandHandler("start", self.start_command))
         self.application.add_handler(CommandHandler("help", self.help_command))
         self.application.add_handler(CommandHandler("groups", self.groups_command))
+        
+        # ПРАВИЛЬНЫЕ фильтры для новой версии библиотеки
         self.application.add_handler(MessageHandler(
-            filters.TEXT & (filters.CHAT_GROUP | filters.CHAT_SUPERGROUP | filters.CHAT_PRIVATE) & ~filters.COMMAND, 
+            filters.TEXT & ~filters.COMMAND, 
             self.handle_message
         ))
 
@@ -89,11 +91,14 @@ class GroupMentionBot:
     async def handle_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not update.message or not update.message.text:
             return
+            
         message_text = update.message.text.lower()
+        print(f"📨 Получено сообщение: {message_text}")
         
         for group_name in groups_data.keys():
             trigger_word = f"@{group_name}"
             if trigger_word in message_text:
+                print(f"🔔 Найден триггер: {trigger_word}")
                 mention_text = self.create_group_mention(group_name)
                 await update.message.reply_text(mention_text)
                 break
