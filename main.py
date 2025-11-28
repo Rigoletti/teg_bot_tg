@@ -17,7 +17,7 @@ print("✅ BOT_TOKEN установлен в коде")
 groups_data = {
     "команда": [
         {"username": "welIweIIweIl"},
-        {"username": "MyNameAbaddon"},
+        {"username": "Viper_DQ"},
         {"username": "winterwort"},
         {"username": "zhukov_nes"},
         {"username": "SHAHmirozdanie"}
@@ -119,3 +119,4 @@ class GroupMentionBot:
 if __name__ == "__main__":
     bot = GroupMentionBot(BOT_TOKEN)
     bot.run()
+
