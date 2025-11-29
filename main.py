@@ -1,6 +1,9 @@
 import logging
 from telegram import Update, BotCommand
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+from flask import Flask, request
+import threading
+import os
 
 # Настройка логирования
 logging.basicConfig(
@@ -8,11 +11,10 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-# Токен бота (прямо в коде)
-BOT_TOKEN = "8355837238:AAHGuJ016fgGwrKfqKIvV9w7VXOCgZdh_aY"
+# Токен бота
+BOT_TOKEN = os.getenv('BOT_TOKEN', '8355837238:AAHGuJ016fgGwrKfqKIvV9w7VXOCgZdh_aY')
 
-print("🚀 Запуск бота на Railway...")
-print("✅ BOT_TOKEN установлен в коде")
+print("🚀 Запуск бота на Koyeb...")
 
 groups_data = {
     "команда": [
@@ -49,6 +51,7 @@ groups_data = {
 
 class GroupMentionBot:
     def __init__(self, token: str):
+        self.token = token
         self.application = Application.builder().token(token).build()
         self.setup_handlers()
         self.application.post_init = self.setup_commands
@@ -58,7 +61,6 @@ class GroupMentionBot:
         self.application.add_handler(CommandHandler("help", self.help_command))
         self.application.add_handler(CommandHandler("groups", self.groups_command))
         
-        # ПРАВИЛЬНЫЕ фильтры для новой версии библиотеки
         self.application.add_handler(MessageHandler(
             filters.TEXT & ~filters.COMMAND, 
             self.handle_message
@@ -123,12 +125,36 @@ class GroupMentionBot:
         ]
         await application.bot.set_my_commands(commands)
 
-    def run(self):
-        print("🤖 Бот запущен и готов к работе на Railway!")
+    def run_polling(self):
+        """Запуск бота с polling"""
+        print("🤖 Бот запущен и готов к работе!")
         self.application.run_polling()
 
-# Запуск бота
-if __name__ == "__main__":
-    bot = GroupMentionBot(BOT_TOKEN)
-    bot.run()
+def start_health_check():
+    """Запуск простого HTTP сервера для health checks"""
+    from flask import Flask
+    app = Flask(__name__)
+    
+    @app.route('/')
+    def health_check():
+        return "🤖 Bot is running!"
+    
+    @app.route('/health')
+    def health():
+        return {"status": "ok", "bot": "running"}
+    
+    port = int(os.environ.get('PORT', 8000))
+    print(f"🏥 Health check server started on port {port}")
+    app.run(host='0.0.0.0', port=port)
 
+def main():
+    # Запускаем health check в отдельном потоке
+    health_thread = threading.Thread(target=start_health_check, daemon=True)
+    health_thread.start()
+    
+    # Запускаем бота
+    bot = GroupMentionBot(BOT_TOKEN)
+    bot.run_polling()
+
+if __name__ == "__main__":
+    main()
