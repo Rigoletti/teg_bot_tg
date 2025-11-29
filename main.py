@@ -42,7 +42,7 @@ groups_data = {
     "смм": [
         {"username": "KystVDele"},
     ],
-    "дизайнер": [
+    "хуёжник": [
         {"username": "TaiBurs"},
     ]
 }
@@ -76,12 +76,12 @@ class GroupMentionBot:
 @менеджер - менеджер
 @психолог - психолог
 @смм - смм специалист
-@дизайнер - дизайнер"""
+@хуёжник - дизайнер"""
         await update.message.reply_text(welcome_text)
 
     async def help_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         help_text = """Просто напишите:
-@команда, @тренер, @начальник, @аналитик, @менеджер, @психолог, @смм, @дизайнер"""
+@команда, @тренер, @начальник, @аналитик, @менеджер, @психолог, @смм, @хуёжник"""
         await update.message.reply_text(help_text)
 
     async def groups_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -131,3 +131,4 @@ class GroupMentionBot:
 if __name__ == "__main__":
     bot = GroupMentionBot(BOT_TOKEN)
     bot.run()
+
